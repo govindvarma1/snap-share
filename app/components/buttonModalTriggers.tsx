@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import CreateRoomModal from "./createRoomModal";
+import JoinRoomModal from "./joinRoomModal";
 
 export default function ButtonModalTriggers() {
 	const [showCreateRoom, setShowCreateRoom] = React.useState(false);
@@ -29,16 +31,16 @@ export default function ButtonModalTriggers() {
 			</button>
 
 			{showCreateRoom && (
-				<div className="modal">
-					<p>Create Room Modal Content</p>
-					<button onClick={toggleCreateRoom}>Close</button>
-				</div>
+				<CreateRoomModal
+					showCreateRoom={showCreateRoom}
+					setShowCreateRoom={setShowCreateRoom}
+				/>
 			)}
 			{showJoinRoom && (
-				<div className="modal">
-					<p>Join Room Modal Content</p>
-					<button onClick={toggleJoinRoom}>Close</button>
-				</div>
+				<JoinRoomModal
+					showJoinRoom={showJoinRoom}
+					setShowJoinRoom={setShowJoinRoom}
+				/>
 			)}
 		</div>
 	);
