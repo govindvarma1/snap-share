@@ -5,6 +5,9 @@ export default function JoinRoomModal({
 	showJoinRoom: boolean;
 	setShowJoinRoom: (value: boolean) => void;
 }) {
+    if(!showJoinRoom) {
+        return null;
+    }
     return (
         <div>
             <button onClick={() => {setShowJoinRoom(false)}}>Join</button>

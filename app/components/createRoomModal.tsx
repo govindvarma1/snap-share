@@ -5,6 +5,9 @@ export default function CreateRoomModal({
 	showCreateRoom: boolean;
 	setShowCreateRoom: (value: boolean) => void;
 }) {
+    if(!showCreateRoom) {
+        return null;
+    }
     return (
         <div>
             <button onClick={() => {setShowCreateRoom(false)}}>Create</button>

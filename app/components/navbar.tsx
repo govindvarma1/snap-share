@@ -1,4 +1,3 @@
-import Link from "next/link";
 import NavBarModalTriggers from "./navbarModalTriggers";
 
 export default function NavBar() {
