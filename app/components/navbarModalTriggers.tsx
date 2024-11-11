@@ -12,11 +12,11 @@ export default function NavBarModalTriggers() {
 	const toggleJoinRoom = () => setShowJoinRoom((prev) => !prev);
 
 	return (
-		<div className="flex gap-2">
-			<button className="font-bold hover:bg-gray-100 p-1 rounded-md" onClick={toggleCreateRoom}>
+		<div className="flex items-center gap-1">
+			<button className="font-semibold hover:bg-gray-100 p-1 rounded-md text-xs sm:text-sm md:text-md" onClick={toggleCreateRoom}>
 				Create Room
 			</button>
-			<button className="font-bold hover:bg-gray-100 p-1 rounded-md" onClick={toggleJoinRoom}>
+			<button className="font-semibold hover:bg-gray-100 p-1 rounded-md text-xs sm:text-sm md:text-md" onClick={toggleJoinRoom}>
 				Join Room
 			</button>
 			{showCreateRoom && (
