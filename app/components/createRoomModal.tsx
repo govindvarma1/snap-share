@@ -9,8 +9,13 @@ export default function CreateRoomModal({
 		return null;
 	}
 	return (
-		<div className="fixed inset-0 backdrop-blur-sm backdrop-brightness-80 bg-opacity-50 flex items-center justify-center z-50 transition duration-300">
-			<div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
+		<div
+			className="fixed inset-0 backdrop-blur-sm backdrop-brightness-80 bg-opacity-50 flex items-center justify-center z-50 transition duration-300"
+			onClick={() => {
+				setShowCreateRoom(false);
+			}}
+		>
+			<div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-[90%]">
 				<div className="flex justify-between items-center pb-3">
 					<h2 className="text-xl font-semibold">Create Room</h2>
 				</div>
@@ -35,7 +40,7 @@ export default function CreateRoomModal({
 						}}
 						className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded"
 					>
-						Close
+						Create
 					</button>
 				</div>
 			</div>
