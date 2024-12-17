@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+// import Error from "next/error";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -27,10 +28,10 @@ export async function POST() {
 		});
 
 		return NextResponse.json({ room: newRoom, success: true });
-	} catch (error: any) {
-		console.error("Error creating room:", error.message);
+	} catch (error) {
+		console.error("Error creating room:", (error as Error).message);
 		return NextResponse.json(
-			{ error: error.message, success: false },
+			{ error: (error as Error).message, success: false },
 			{ status: 500 }
 		);
 	}
