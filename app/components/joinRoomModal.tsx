@@ -1,6 +1,9 @@
 "use client";
 import "@/app/components/styles/animations.css";
 import React from "react";
+import toast from "react-hot-toast";
+import { roomCreationStyle } from "../utils/toastStyles";
+import { useRouter } from "next/navigation";
 
 export default function JoinRoomModal({
 	showJoinRoom,
@@ -9,14 +12,63 @@ export default function JoinRoomModal({
 	showJoinRoom: boolean;
 	setShowJoinRoom: (value: boolean) => void;
 }) {
-	const [roomId, setRoomId] = React.useState("");
+	const [roomCode, setRoomCode] = React.useState("");
+	const [error, setError] = React.useState("");
+
+	const router = useRouter();
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRoomId(event.target.value);
+		setRoomCode(event.target.value);
 	};
 
 	const handleClick = () => {
 		setShowJoinRoom(false);
+	};
+
+	const validateRoomCode = () => {
+		if (!/^\d{6}$/.test(roomCode)) {
+			setError("Room code must be a 6-digit number.");
+			return false;
+		}
+		setError("");
+		return true;
+	};
+
+	const joinRoom = async () => {
+		if (validateRoomCode()) {
+			try {
+				const response = await fetch("/api/joinRoom", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ roomCode: Number(roomCode) }),
+				});
+
+				const data = await response.json();
+
+				console.log(data);
+
+				if (!response.ok || !data?.success) {
+					toast.error(data?.error || "Something went wrong", roomCreationStyle);
+					return;
+				}
+
+				toast.success(
+					"You will be redirected to the room shortly",
+					roomCreationStyle
+				);
+				router.push(`/${roomCode}`);
+			} catch (error) {
+				console.error("Error joining room:", error);
+				toast.error(
+					"Failed to join room. Please try again later.",
+					roomCreationStyle
+				);
+			}
+		} else {
+			toast.error("Invalid room code", roomCreationStyle);
+		}
 	};
 
 	if (!showJoinRoom) {
@@ -37,12 +89,15 @@ export default function JoinRoomModal({
 				<p className="text-gray-800 text-sm">
 					Enter the code to join the room.
 				</p>
-				<input
-					type="number"
-					placeholder="Enter room no."
-                    className="border-[1px] bg-gray-50 p-1 rounded-sm"
-					onChange={handleChange}
-				/>
+				<div className="w-full">
+					<input
+						type="number"
+						placeholder="Enter room no."
+						className="border-[1px] w-full bg-gray-50 p-1 rounded-sm"
+						onChange={handleChange}
+					/>
+					{error && <div className="text-red-500 text-sm">{error}</div>}
+				</div>
 				<div className="flex gap-2 justify-end">
 					<button
 						className="px-2 py-1 border-[1px] rounded-sm border-blue-500 hover:bg-gray-100 text-blue-500 font-bold"
@@ -52,7 +107,7 @@ export default function JoinRoomModal({
 					</button>
 					<button
 						className="px-2 py-1 rounded-sm bg-blue-500 hover:bg-blue-600 text-white font-bold"
-						onClick={handleClick}
+						onClick={joinRoom}
 					>
 						Join
 					</button>
