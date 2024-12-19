@@ -1,12 +1,10 @@
 import { prisma } from "@/lib/prisma";
 
-interface RoomProps {
-	params: {
-		roomCode: string;
-	};
-}
-
-export default async function Room({ params }: RoomProps) {
+export default async function Room({
+	params,
+}: {
+	params: { roomCode: string };
+}) {
 	const roomCode = Number(params?.roomCode);
 	if (isNaN(roomCode)) {
 		return <div className="p-6">Invalid Room Code</div>;
