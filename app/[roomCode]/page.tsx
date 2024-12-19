@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
 
-export default async function Room({
-	params,
-}: {
+interface RoomProps {
 	params: { roomCode: string };
-}) {
-	const roomCode = Number(params?.roomCode);
+}
+
+export default async function Room({ params }: RoomProps) {
+	const roomCode = parseInt(params.roomCode, 10);
+
 	if (isNaN(roomCode)) {
 		return <div className="p-6">Invalid Room Code</div>;
 	}
@@ -22,7 +23,7 @@ export default async function Room({
 		<div className="p-6">
 			<h1 className="text-2xl font-bold">Room ID: {roomCode}</h1>
 			<p className="text-gray-700">
-				Room created at: {room.createdAt.toString()}
+				Room created at: {room.createdAt.toISOString()}
 			</p>
 		</div>
 	);
