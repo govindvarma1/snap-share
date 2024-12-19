@@ -2,6 +2,8 @@ import ButtonModalTriggers from "./components/buttonModalTriggers";
 import Footer from "./components/footer";
 import NavBar from "./components/navbar";
 
+export const runtime = "nodejs";
+
 export default function Home() {
 	return (
 		<>
