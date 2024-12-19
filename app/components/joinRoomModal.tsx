@@ -4,6 +4,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import { roomCreationStyle } from "../utils/toastStyles";
 import { useRouter } from "next/navigation";
+import Loader from "./Loader";
 
 export default function JoinRoomModal({
 	showJoinRoom,
@@ -12,6 +13,7 @@ export default function JoinRoomModal({
 	showJoinRoom: boolean;
 	setShowJoinRoom: (value: boolean) => void;
 }) {
+	const [isRoomJoining, setIsRoomJoining] = React.useState(false);
 	const [roomCode, setRoomCode] = React.useState("");
 	const [error, setError] = React.useState("");
 
@@ -36,6 +38,7 @@ export default function JoinRoomModal({
 
 	const joinRoom = async () => {
 		if (validateRoomCode()) {
+			setIsRoomJoining(true);
 			try {
 				const response = await fetch("/api/joinRoom", {
 					method: "POST",
@@ -58,6 +61,7 @@ export default function JoinRoomModal({
 					"You will be redirected to the room shortly",
 					roomCreationStyle
 				);
+				await new Promise((resolve) => setTimeout(resolve, 1000));
 				router.push(`/${roomCode}`);
 			} catch (error) {
 				console.error("Error joining room:", error);
@@ -65,6 +69,8 @@ export default function JoinRoomModal({
 					"Failed to join room. Please try again later.",
 					roomCreationStyle
 				);
+			} finally {
+				setIsRoomJoining(false);
 			}
 		} else {
 			toast.error("Invalid room code", roomCreationStyle);
@@ -108,8 +114,9 @@ export default function JoinRoomModal({
 					<button
 						className="px-2 py-1 rounded-sm bg-blue-500 hover:bg-blue-600 text-white font-bold"
 						onClick={joinRoom}
+						disabled={isRoomJoining}
 					>
-						Join
+						{isRoomJoining ? <Loader /> : <span>Join</span>}
 					</button>
 				</div>
 			</div>
