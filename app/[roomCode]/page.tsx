@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { prisma } from "@/lib/prisma";
 
-export default async function({params}: {params: Promise<{ roomCode: string }>}) {
+const RoomPage= async({params}: {params: Promise<{ roomCode: string }>}) => {
 	const { roomCode } = await params;
 
 	const parsedRoomCode = parseInt(roomCode, 10);
@@ -32,3 +32,5 @@ export default async function({params}: {params: Promise<{ roomCode: string }>})
 		return <div className="p-6">An error occurred. Please try again.</div>;
 	}
 };
+
+export default RoomPage;
