@@ -1,7 +1,10 @@
-import { NextPage } from "next";
 import { prisma } from "@/lib/prisma";
 
-const RoomPage= async({params}: {params: Promise<{ roomCode: string }>}) => {
+const RoomPage = async ({
+	params,
+}: {
+	params: Promise<{ roomCode: string }>;
+}) => {
 	const { roomCode } = await params;
 
 	const parsedRoomCode = parseInt(roomCode, 10);
@@ -12,7 +15,7 @@ const RoomPage= async({params}: {params: Promise<{ roomCode: string }>}) => {
 
 	try {
 		const room = await prisma.room.findUnique({
-			where: { roomCode: parsedRoomCode }, // Use parsedRoomCode here
+			where: { roomCode: parsedRoomCode },
 		});
 
 		if (!room) {
