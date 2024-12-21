@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import RoomTimer from "../components/roomTimer";
 
 const RoomPage = async ({
 	params,
@@ -6,6 +7,7 @@ const RoomPage = async ({
 	params: Promise<{ roomCode: string }>;
 }) => {
 	const { roomCode } = await params;
+	let room = null;
 
 	const parsedRoomCode = parseInt(roomCode, 10);
 
@@ -14,7 +16,7 @@ const RoomPage = async ({
 	}
 
 	try {
-		const room = await prisma.room.findUnique({
+		room = await prisma.room.findUnique({
 			where: { roomCode: parsedRoomCode },
 		});
 
@@ -23,7 +25,11 @@ const RoomPage = async ({
 		}
 
 		return (
-			<div className="p-6">
+			<div className="px-12 py-4">
+				<div className="flex flex-col w-full items-center my-4 gap-2">
+					<h1 className="text-4xl font-bold">SnapShare</h1>
+					<RoomTimer createdAt={new Date(room.createdAt)} />
+				</div>
 				<h1 className="text-2xl font-bold">Room ID: {parsedRoomCode}</h1>
 				<p className="text-gray-700">
 					Room created at: {room.createdAt.toString()}
