@@ -20,7 +20,7 @@ export async function GET() {
 		);
 	} catch (error) {
         console.error("Error deleting expired rooms:", error);
-		NextResponse.json(
+		return NextResponse.json(
 			{ error: (error as Error).message, success: false },
 			{ status: 500 }
 		);
