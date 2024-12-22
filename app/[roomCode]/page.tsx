@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import RoomTimer from "../components/roomTimer";
 import RoomURL from "../components/roomURL";
+import "../globals.css";
 
 const RoomPage = async ({
 	params,
@@ -26,19 +27,21 @@ const RoomPage = async ({
 		}
 
 		return (
-			<div className="px-12 py-4">
-				<div className="flex flex-col w-full items-center my-4 gap-1">
-					<h1 className="text-4xl font-black">SnapShare</h1>
-					<RoomTimer createdAt={new Date(room.createdAt)} />
+			<body className="app-bg">
+				<div className="px-12 py-4">
+					<div className="flex flex-col w-full items-center my-4 gap-1">
+						<h1 className="text-4xl font-black">SnapShare</h1>
+						<RoomTimer createdAt={new Date(room.createdAt)} />
+					</div>
+					<div className="flex justify-center my-4">
+						<RoomURL roomCode={room.roomCode} />
+					</div>
+					<h1 className="text-2xl font-bold">Room ID: {parsedRoomCode}</h1>
+					<p className="text-gray-700">
+						Room created at: {room.createdAt.toString()}
+					</p>
 				</div>
-				<div className="flex justify-center my-4">
-					<RoomURL roomCode={room.roomCode} />
-				</div>
-				<h1 className="text-2xl font-bold">Room ID: {parsedRoomCode}</h1>
-				<p className="text-gray-700">
-					Room created at: {room.createdAt.toString()}
-				</p>
-			</div>
+			</body>
 		);
 	} catch (error) {
 		console.error("Error fetching room:", error);
