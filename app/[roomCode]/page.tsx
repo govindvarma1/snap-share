@@ -27,7 +27,7 @@ const RoomPage = async ({
 		}
 
 		return (
-			<body className="app-bg">
+			<section className="app-bg">
 				<div className="px-12 py-4">
 					<div className="flex flex-col w-full items-center my-4 gap-1">
 						<h1 className="text-4xl font-black">SnapShare</h1>
@@ -41,7 +41,7 @@ const RoomPage = async ({
 						Room created at: {room.createdAt.toString()}
 					</p>
 				</div>
-			</body>
+			</section>
 		);
 	} catch (error) {
 		console.error("Error fetching room:", error);

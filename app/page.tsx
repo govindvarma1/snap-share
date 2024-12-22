@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 export default function Home() {
 	return (
-		<body className="app-bg">
+		<section className="app-bg">
 			<div className="mx-4 mt-2 max-h-screen sm:mx-8 md:mx-16 lg:mx-32">
 				<NavBar />
 				<div className="min-h-[85svh] flex flex-col justify-center items-center w-full">
@@ -32,6 +32,6 @@ export default function Home() {
 				</div>
 			</div>
 			<Footer />
-		</body>
+		</section>
 	);
 }

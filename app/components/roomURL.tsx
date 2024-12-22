@@ -23,9 +23,10 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 	};
 
 	return (
-		<div className="border-dashed border-gray-500 border-2 rounded-lg w-fit px-4 py-4">
-			<p className="font-semibold">Room Code: {roomCode.toString()}</p>
-			<div className="flex gap-2 justify-center items-center">
+		<div className="relative border-dashed border-gray-500 border-2 rounded-lg w-fit p-4">
+			<div className="absolute inset-0 bg-gray-100 opacity-50 rounded-lg pointer-events-none"></div>
+			<p className="font-semibold relative">Room Code: {roomCode.toString()}</p>
+			<div className="flex gap-2 justify-center items-center relative">
 				<p className="font-semibold">URL: {URLText}</p>
 				<button
 					onClick={handleCopy}
@@ -37,11 +38,8 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 					<FaRegCopy />
 				</button>
 			</div>
-			<div className="flex items-center justify-center mt-2">
-				<button
-					// onClick={handleCloseRoom}
-					className="text-red-500 font-semibold cursor-pointer hover:underline"
-				>
+			<div className="flex items-center justify-center mt-2 relative">
+				<button className="text-red-500 font-semibold cursor-pointer hover:underline">
 					Close Room
 				</button>
 			</div>
