@@ -1,7 +1,8 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/utils/prisma";
 import RoomTimer from "../components/roomTimer";
 import RoomURL from "../components/roomURL";
 import "../globals.css";
+import FilePicker from "../components/filePicker";
 
 const RoomPage = async ({
 	params,
@@ -36,6 +37,7 @@ const RoomPage = async ({
 					<div className="flex justify-center my-4">
 						<RoomURL roomCode={room.roomCode} />
 					</div>
+					<FilePicker />
 					<h1 className="text-2xl font-bold">Room ID: {parsedRoomCode}</h1>
 					<p className="text-gray-700">
 						Room created at: {room.createdAt.toString()}
