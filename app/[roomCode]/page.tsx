@@ -28,7 +28,7 @@ const RoomPage = async ({
 		}
 
 		return (
-			<section className="app-bg">
+			<section className="app-bg min-h-screen">
 				<div className="px-12 py-4">
 					<div className="flex flex-col w-full items-center my-4 gap-1">
 						<h1 className="text-4xl font-black">SnapShare</h1>
@@ -37,11 +37,7 @@ const RoomPage = async ({
 					<div className="flex justify-center my-4">
 						<RoomURL roomCode={room.roomCode} />
 					</div>
-					<FilePicker />
-					<h1 className="text-2xl font-bold">Room ID: {parsedRoomCode}</h1>
-					<p className="text-gray-700">
-						Room created at: {room.createdAt.toString()}
-					</p>
+					<FilePicker roomCode={roomCode}/>
 				</div>
 			</section>
 		);

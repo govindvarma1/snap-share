@@ -3,7 +3,6 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { FaRegCopy } from "react-icons/fa";
-import { roomCreationStyle } from "@/app/utils/toastStyles";
 
 export default function RoomURL({ roomCode }: { roomCode: number }) {
 	const URLText = `https://snapshareapp.vercel.app/${roomCode}`;
@@ -13,7 +12,7 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 		try {
 			await navigator.clipboard.writeText(URLText);
 			setIsCopied(true);
-			toast.success("Copied to clipboard", roomCreationStyle);
+			toast.success("Copied to clipboard");
 			setTimeout(() => {
 				setIsCopied(false);
 			}, 2000);

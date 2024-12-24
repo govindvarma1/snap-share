@@ -6,7 +6,6 @@ import React from "react";
 import "./styles/loader.css";
 import Loader from "./Loader";
 import toast from "react-hot-toast";
-import { roomCreationStyle } from "../utils/toastStyles";
 
 export default function CreateRoomModal({
 	showCreateRoom,
@@ -45,7 +44,7 @@ export default function CreateRoomModal({
 			setRoomCode(newRoomCode);
 
 			setShowRoomCode(true);
-			toast.success("Room created successfully", roomCreationStyle);
+			toast.success("Room created successfully");
 			await new Promise((resolve) => setTimeout(resolve, 2000));
 			console.log(newRoomCode);
 			router.push(`${newRoomCode}`);

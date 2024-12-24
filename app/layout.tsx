@@ -42,10 +42,21 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${inter.className} antialiased`}>
 				{children}
-				<NextSSRPlugin
-					routerConfig={extractRouterConfig(ourFileRouter)}
+				<NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+				<Toaster
+					position="bottom-left"
+					toastOptions={{
+						style: {
+							border: "1px solid #3b82f6",
+							padding: "16px",
+							color: "#3b82f6",
+						},
+						iconTheme: {
+							primary: "#3b82f6",
+							secondary: "#FFFAEE",
+						},
+					}}
 				/>
-				<Toaster position="bottom-left" />
 				<Analytics />
 			</body>
 		</html>

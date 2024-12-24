@@ -2,7 +2,6 @@
 import "@/app/components/styles/animations.css";
 import React from "react";
 import toast from "react-hot-toast";
-import { roomCreationStyle } from "../utils/toastStyles";
 import { useRouter } from "next/navigation";
 import Loader from "./Loader";
 
@@ -53,27 +52,21 @@ export default function JoinRoomModal({
 				console.log(data);
 
 				if (!response.ok || !data?.success) {
-					toast.error(data?.error || "Something went wrong", roomCreationStyle);
+					toast.error(data?.error || "Something went wrong");
 					return;
 				}
 
-				toast.success(
-					"You will be redirected to the room shortly",
-					roomCreationStyle
-				);
+				toast.success("You will be redirected to the room shortly");
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 				router.push(`/${roomCode}`);
 			} catch (error) {
 				console.error("Error joining room:", error);
-				toast.error(
-					"Failed to join room. Please try again later.",
-					roomCreationStyle
-				);
+				toast.error("Failed to join room. Please try again later.");
 			} finally {
 				setIsRoomJoining(false);
 			}
 		} else {
-			toast.error("Invalid room code", roomCreationStyle);
+			toast.error("Invalid room code");
 		}
 	};
 

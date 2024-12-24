@@ -3,21 +3,27 @@
 import { UploadButton, UploadDropzone } from "@/utils/uploadthing";
 import toast from "react-hot-toast";
 
-export default function FilePicker() {
+export default function FilePicker({ roomCode }: { roomCode: string }) {
 	return (
 		<main className="flex flex-col items-center justify-between m-8">
 			<UploadDropzone
 				endpoint="allFilesUploader"
+				input={{ roomCode: parseInt(roomCode) }}
+				onUploadBegin={() => {
+					toast.loading("uploading files...", );
+				}}
 				onClientUploadComplete={(res) => {
+					toast.dismiss();
 					console.log("Files: ", res);
-					alert("Upload Completed");
+					toast.success("Files uploaded successfully");
 				}}
 				onUploadError={(error: Error) => {
+					toast.dismiss();
 					toast.error(`ERROR! ${error.message}`);
 				}}
 				appearance={{
 					label: {
-						color: "#3b82f6"
+						color: "#3b82f6",
 					},
 					container: {
 						borderStyle: "dashed",
