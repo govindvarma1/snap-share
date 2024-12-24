@@ -1,8 +1,8 @@
 import { prisma } from "@/utils/prisma";
-import RoomTimer from "../components/roomTimer";
-import RoomURL from "../components/roomURL";
+import RoomTimer from "./components/roomTimer";
+import RoomURL from "./components/roomURL";
+import FilePicker from "./components/filePicker";
 import "../globals.css";
-import FilePicker from "../components/filePicker";
 
 const RoomPage = async ({
 	params,

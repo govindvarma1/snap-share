@@ -3,7 +3,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { FaRegCopy } from "react-icons/fa";
-import { roomCreationStyle } from "../utils/toastStyles";
+import { roomCreationStyle } from "../../utils/toastStyles";
 
 export default function RoomURL({ roomCode }: { roomCode: number }) {
 	const URLText = `https://snapshareapp.vercel.app/${roomCode}`;
