@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import formatTime from "../utils/formatTime";
+import formatTime from "@/app/utils/formatTime";
 
 export default function RoomTimer({ createdAt }: { createdAt: Date }) {
 	const [timeLeft, setTimeLeft] = React.useState<number>(0);
