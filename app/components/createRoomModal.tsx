@@ -45,7 +45,7 @@ export default function CreateRoomModal({
 
 			setShowRoomCode(true);
 			toast.success("Room created successfully");
-			await new Promise((resolve) => setTimeout(resolve, 2000));
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			console.log(newRoomCode);
 			router.push(`${newRoomCode}`);
 		} catch (error) {

@@ -10,7 +10,7 @@ export default function FilePicker({ roomCode }: { roomCode: string }) {
 				endpoint="allFilesUploader"
 				input={{ roomCode: parseInt(roomCode) }}
 				onUploadBegin={() => {
-					toast.loading("uploading files...", );
+					toast.loading("uploading files...", {id: "upload-files"} );
 				}}
 				onClientUploadComplete={(res) => {
 					toast.dismiss();

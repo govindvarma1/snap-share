@@ -3,10 +3,15 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { FaRegCopy } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { deleteRoom } from "@/app/[roomCode]/_actions/actions";
 
 export default function RoomURL({ roomCode }: { roomCode: number }) {
 	const URLText = `https://snapshareapp.vercel.app/${roomCode}`;
 	const [isCopied, setIsCopied] = React.useState<boolean>(false);
+	const [isButtonClicked, setIsButtonClicked] = React.useState<boolean>(false);
+
+	const router = useRouter();
 
 	const handleCopy = async () => {
 		try {
@@ -18,6 +23,21 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 			}, 2000);
 		} catch (error) {
 			console.error(error);
+		}
+	};
+
+	const handleDeleteRoom = async () => {
+		setIsButtonClicked(true);
+		toast.loading("Deleting the room");
+		try {
+			await deleteRoom(roomCode);
+			toast.dismiss();
+			toast.success("Room deleted successfully");
+			await new Promise((resolve) => setInterval(resolve, 500));
+			router.push("/");	
+		} catch (error) {
+			toast.dismiss();
+			toast.error(`Error: ${error}`);
 		}
 	};
 
@@ -38,7 +58,11 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 				</button>
 			</div>
 			<div className="flex items-center justify-center mt-2 relative">
-				<button className="text-red-500 font-semibold cursor-pointer hover:underline">
+				<button
+					className="text-red-500 font-semibold cursor-pointer hover:underline"
+					onClick={handleDeleteRoom}
+					disabled={isButtonClicked}
+				>
 					Close Room
 				</button>
 			</div>
