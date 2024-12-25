@@ -2,6 +2,7 @@
 
 import { UploadButton, UploadDropzone } from "@/utils/uploadthing";
 import toast from "react-hot-toast";
+import { isRoomValid, saveFiles } from "../_actions/actions";
 
 export default function FilePicker({ roomCode }: { roomCode: string }) {
 	return (
@@ -9,12 +10,18 @@ export default function FilePicker({ roomCode }: { roomCode: string }) {
 			<UploadDropzone
 				endpoint="allFilesUploader"
 				input={{ roomCode: parseInt(roomCode) }}
+				// onBeforeUploadBegin={() => isRoomValid(parseInt(roomCode))}
 				onUploadBegin={() => {
-					toast.loading("uploading files...", {id: "upload-files"} );
+					toast.loading("uploading files...", { id: "upload-files" });
 				}}
-				onClientUploadComplete={(res) => {
-					toast.dismiss();
+				onClientUploadComplete={async (res) => {
 					console.log("Files: ", res);
+					await Promise.all(
+						res.map((file) => {
+							saveFiles(parseInt(roomCode), file.url, file.name, file.size);
+						})
+					);
+					toast.dismiss();
 					toast.success("Files uploaded successfully");
 				}}
 				onUploadError={(error: Error) => {
