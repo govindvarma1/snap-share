@@ -13,17 +13,16 @@ model Room {
   roomCode  Int      @unique
   files     File[]   // One Room can have many Files
   createdAt DateTime @default(now())
-  expiresAt DateTime? // Optional expiration date for the room
 }
 
 model File {
   id              Int      @id @default(autoincrement())
   roomCode        Int
+  mediaId         String
   name            String
   size            Int
   mediaAccessLink String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-
   room            Room     @relation(fields: [roomCode], references: [roomCode], onDelete: Cascade)
 }

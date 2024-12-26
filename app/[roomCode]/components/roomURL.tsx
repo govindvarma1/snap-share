@@ -34,7 +34,7 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 			toast.dismiss();
 			toast.success("Room deleted successfully");
 			await new Promise((resolve) => setInterval(resolve, 500));
-			router.push("/");	
+			router.push("/");
 		} catch (error) {
 			toast.dismiss();
 			toast.error(`Error: ${error}`);
@@ -42,11 +42,13 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 	};
 
 	return (
-		<div className="relative border-dashed border-gray-500 border-2 rounded-lg w-fit p-4">
+		<div className="relative border-dashed border-gray-500 border-2 rounded-lg w-fit py-4 px-2 sm:px-4">
 			<div className="absolute inset-0 bg-gray-100 opacity-50 rounded-lg pointer-events-none"></div>
 			<p className="font-semibold relative">Room Code: {roomCode.toString()}</p>
-			<div className="flex gap-2 justify-center items-center relative">
-				<p className="font-semibold">URL: {URLText}</p>
+			<div className="flex justify-center items-center relative gap-1 sm:gap-2">
+				<p className="font-semibold max-[400px]:text-xs max-[500px]:text-sm">
+					URL: {URLText}
+				</p>
 				<button
 					onClick={handleCopy}
 					disabled={isCopied}

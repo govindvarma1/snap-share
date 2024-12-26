@@ -40,7 +40,8 @@ export const saveFiles = async (
 	roomCode: number,
 	mediaAccessLink: string,
 	name: string,
-	size: number
+	size: number,
+	mediaId: string
 ) => {
 	try {
 		const file = await prisma.file.create({
@@ -49,6 +50,7 @@ export const saveFiles = async (
 				mediaAccessLink,
 				name,
 				size,
+				mediaId,
 			},
 		});
 		console.log("File: ", file);

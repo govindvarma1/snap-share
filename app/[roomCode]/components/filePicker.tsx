@@ -5,12 +5,27 @@ import toast from "react-hot-toast";
 import { isRoomValid, saveFiles } from "../_actions/actions";
 
 export default function FilePicker({ roomCode }: { roomCode: string }) {
+	const verifyFileUpload = async (files: File[]) => {
+		try {
+			const roomValid = await isRoomValid(parseInt(roomCode));
+			if (roomValid) {
+				return files;
+			} else {
+				toast.error("Room has expired");
+				return [];
+			}
+		} catch (error) {
+			toast.error(`Error: ${error}`);
+			return [];
+		}
+	};
+
 	return (
-		<main className="flex flex-col items-center justify-between m-8">
+		<main className="flex flex-col items-center justify-between my-8">
 			<UploadDropzone
 				endpoint="allFilesUploader"
 				input={{ roomCode: parseInt(roomCode) }}
-				// onBeforeUploadBegin={() => isRoomValid(parseInt(roomCode))}
+				onBeforeUploadBegin={(files) => verifyFileUpload(files)}
 				onUploadBegin={() => {
 					toast.loading("uploading files...", { id: "upload-files" });
 				}}
@@ -18,7 +33,7 @@ export default function FilePicker({ roomCode }: { roomCode: string }) {
 					console.log("Files: ", res);
 					await Promise.all(
 						res.map((file) => {
-							saveFiles(parseInt(roomCode), file.url, file.name, file.size);
+							saveFiles(parseInt(roomCode), file.url, file.name, file.size, file.key);
 						})
 					);
 					toast.dismiss();

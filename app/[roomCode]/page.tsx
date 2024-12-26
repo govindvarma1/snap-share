@@ -29,7 +29,7 @@ const RoomPage = async ({
 
 		return (
 			<section className="app-bg min-h-screen">
-				<div className="px-12 py-4">
+				<div className="px-4 py-4 sm:px-12">
 					<div className="flex flex-col w-full items-center my-4 gap-1">
 						<h1 className="text-4xl font-black">SnapShare</h1>
 						<RoomTimer createdAt={new Date(room.createdAt)} />
