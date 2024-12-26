@@ -1,5 +1,6 @@
 "use server";
 import { prisma } from "@/utils/prisma";
+import { utapi } from "@/utils/uploadthingClient";
 
 export const getRoomDetails = async (roomCode: number) => {
 	try {
@@ -90,8 +91,14 @@ export const fetchFiles = async (roomCode: number) => {
 	}
 };
 
-export const deleteFile = async (id: number) => {
+export const deleteFile = async (mediaId: string) => {
 	try {
+		await prisma.file.deleteMany({
+			where: {mediaId: mediaId},
+		})
+		await utapi.deleteFiles(mediaId);
+		console.log("Deleted File", mediaId);
+		return true;
 	} catch (error) {
 		throw error;
 	}

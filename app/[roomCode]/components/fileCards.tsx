@@ -6,6 +6,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import JSZip from "jszip";
 import { formatBytes } from "@/app/utils/formatBytes";
 import { FileDetails } from "@/utils/types";
+import { deleteFile } from "../_actions/actions";
 
 export default function FileCards({ files }: { files: FileDetails[] }) {
 	const [selectedFiles, setSelectedFiles] = React.useState<string[]>([]);
@@ -134,7 +135,7 @@ export default function FileCards({ files }: { files: FileDetails[] }) {
 									>
 										<LuDownload />
 									</button>
-									<button className="text-lg ">
+									<button className="text-lg " onClick={() => {deleteFile(file.mediaId)}}>
 										<MdOutlineDelete />
 									</button>
 								</div>
