@@ -10,9 +10,10 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import FileCards from "./components/fileCards";
 import "../globals.css";
+import { RoomDetails } from "@/utils/types";
 
 const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
-	const [room, setRoom] = useState<any>(null);
+	const [room, setRoom] = useState<RoomDetails | null>(null);
 	const [files, setFiles] = useState<{ name: string; url: string }[]>([]);
 	const router = useRouter();
 
@@ -63,7 +64,7 @@ const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 				<div className="flex justify-center my-4">
 					<RoomURL roomCode={room.roomCode} />
 				</div>
-				<FilePicker roomCode={room.roomCode} setFiles={setFiles} />
+				<FilePicker roomCode={room.roomCode.toString()} setFiles={setFiles} />
 				<div className="my-4 mx-8 flex justify-center items-center">
 					<div className=" w-full max-w-[1260px]">
 						<h1 className="text-3xl font-bold">Uploaded Files</h1>
