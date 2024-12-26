@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { LuDownload } from "react-icons/lu";
 import { MdOutlineDelete } from "react-icons/md";
 import JSZip from "jszip";
+import { formatBytes } from "@/app/utils/formatBytes";
+import { FileDetails } from "@/utils/types";
 
 export default function FileCards({
 	files,
 }: {
-	files: { name: string; url: string }[];
+	files: FileDetails[];
 }) {
-	const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+	const [selectedFiles, setSelectedFiles] = React.useState<string[]>([]);
 	const allFilesSelected = selectedFiles.length === files.length;
 
 	const toggleFileSelection = (fileUrl: string) => {
@@ -22,7 +24,7 @@ export default function FileCards({
 	};
 
 	const selectAllFiles = () => {
-		setSelectedFiles(files.map((file) => file.url));
+		setSelectedFiles(files.map((file) => file.mediaAccessLink));
 	};
 
 	const deselectAllFiles = () => {
@@ -75,7 +77,7 @@ export default function FileCards({
 
 	return (
 		<div>
-			<div className="actions flex items-center gap-4 my-4">
+			<div className="actions flex items-center gap-4 my-2">
 				<button onClick={selectAllFiles} className="font-semibold">
 					Select All
 				</button>
@@ -100,37 +102,34 @@ export default function FileCards({
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 				{files.map((file) => (
 					<div
-						key={file.url}
+						key={file.mediaAccessLink}
 						className="file-card border border-gray-300 bg-white rounded p-4 flex items-center gap-4"
 					>
 						<input
 							type="checkbox"
-							checked={selectedFiles.includes(file.url)}
-							onChange={() => toggleFileSelection(file.url)}
-							className="checkbox"
+							checked={selectedFiles.includes(file.mediaAccessLink)}
+							onChange={() => toggleFileSelection(file.mediaAccessLink)}
+							className="checkbox cursor-pointer"
 						/>
-						<div className="file-details flex flex-col">
-							<p className="file-name font-semibold">{file.name}</p>
-							<a
-								href={file.url}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="text-blue-500 hover:underline"
-							>
-								View File
-							</a>
+						<div className="w-full">
+							<div className="flex justify-between w-full">
+								<p className="file-name font-semibold">
+									{file.name.slice(0, 15)}{file.name.length > 15 && "..."}
+								</p>
+								<div className="flex gap-1">
+									<button
+										onClick={() => downloadFile(file.mediaAccessLink, file.name)}
+										className="text-lg"
+									>
+										<LuDownload />
+									</button>
+									<button className="text-lg ">
+										<MdOutlineDelete />
+									</button>
+								</div>
+							</div>
+							<p className="text-sm">{formatBytes(file.size)}</p>
 						</div>
-						<button
-							onClick={() => downloadFile(file.url, file.name)}
-							className="text-lg"
-						>
-							<LuDownload />
-						</button>
-						<button
-							className="text-lg "
-						>
-							<MdOutlineDelete />
-						</button>
 					</div>
 				))}
 			</div>

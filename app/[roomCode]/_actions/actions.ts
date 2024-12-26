@@ -1,16 +1,16 @@
 "use server";
 import { prisma } from "@/utils/prisma";
 
-export const getRoomDetails = async(roomCode: number) => {
+export const getRoomDetails = async (roomCode: number) => {
 	try {
 		const room = await prisma.room.findUnique({
 			where: { roomCode: roomCode },
 		});
 		return room;
 	} catch (error) {
-		throw error
+		throw error;
 	}
-}
+};
 
 export const deleteRoom = async (roomCode: number) => {
 	try {
@@ -27,16 +27,16 @@ export const isRoomValid = async (roomCode: number) => {
 	try {
 		const room = await prisma.room.findUnique({
 			where: {
-				roomCode
-			}
-		})
-		if(!room) {
+				roomCode,
+			},
+		});
+		if (!room) {
 			console.log("room does not exit");
 			return false;
 		}
-		const expiryTime  = room.createdAt.getTime() + 15 * 60 * 1000;
+		const expiryTime = room.createdAt.getTime() + 15 * 60 * 1000;
 		const currentTime = new Date().getTime();
-		if(expiryTime <= currentTime) {
+		if (expiryTime <= currentTime) {
 			console.log("room expired");
 			return false;
 		}
@@ -45,7 +45,7 @@ export const isRoomValid = async (roomCode: number) => {
 		console.error("Error: ", error);
 		return false;
 	}
-}
+};
 
 export const saveFiles = async (
 	roomCode: number,
@@ -70,16 +70,29 @@ export const saveFiles = async (
 	}
 };
 
-export const fetchFiles = async(roomCode: number) => {
+export const fetchFiles = async (roomCode: number) => {
 	try {
 		const files = await prisma.file.findMany({
 			where: {
-				roomCode
-			}
+				roomCode,
+			},
 		});
-		const modifiedFileDetails = files.map((file) => ({name: file.name, url: file.mediaAccessLink}));
+		const modifiedFileDetails = files.map((file) => ({
+			roomCode: roomCode,
+			name: file.name,
+			mediaAccessLink: file.mediaAccessLink,
+			size: file.size,
+			mediaId: file.mediaId,
+		}));
 		return modifiedFileDetails;
 	} catch (error) {
-		throw error
+		throw error;
 	}
-}
+};
+
+export const deleteFile = async (id: number) => {
+	try {
+	} catch (error) {
+		throw error;
+	}
+};

@@ -4,13 +4,14 @@ import { UploadDropzone } from "@/utils/uploadthing";
 import toast from "react-hot-toast";
 import { isRoomValid, saveFiles } from "../_actions/actions";
 import { Dispatch, SetStateAction } from "react";
+import { FileDetails } from "@/utils/types";
 
 export default function FilePicker({
 	roomCode,
 	setFiles,
 }: {
 	roomCode: string;
-	setFiles: Dispatch<SetStateAction<{ name: string; url: string }[]>>;
+	setFiles: Dispatch<SetStateAction<FileDetails[]>>;
 }) {
 	const verifyFileUpload = async (files: File[]) => {
 		try {
@@ -41,7 +42,13 @@ export default function FilePicker({
 					res.forEach((file) => {
 						setFiles((prevValue) => [
 							...prevValue,
-							{ name: file.name, url: file.url },
+							{
+								roomCode: parseInt(roomCode),
+								name: file.name,
+								mediaAccessLink: file.url,
+								size: file.size,
+								mediaId: file.key,
+							},
 						]);
 					});
 					await Promise.all(

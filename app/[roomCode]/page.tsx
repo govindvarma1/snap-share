@@ -9,12 +9,12 @@ import RoomPageSkeleton from "./loading";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import FileCards from "./components/fileCards";
+import { FileDetails, RoomDetails } from "@/utils/types";
 import "../globals.css";
-import { RoomDetails } from "@/utils/types";
 
 const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 	const [room, setRoom] = useState<RoomDetails | null>(null);
-	const [files, setFiles] = useState<{ name: string; url: string }[]>([]);
+	const [files, setFiles] = useState<FileDetails[]>([]);
 	const router = useRouter();
 
 	useEffect(() => {

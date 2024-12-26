@@ -5,10 +5,10 @@ export interface RoomDetails {
 }
 
 export interface FileDetails {
-	id: number;
-	name: string;
-	url: string;
+	// id: number;
 	roomCode: number;
-	uploadedAt: Date;
-    updatedAt: Date;
+	name: string;
+	mediaAccessLink: string;
+	size: number;
+	mediaId: string;
 }
