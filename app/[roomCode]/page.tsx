@@ -65,9 +65,9 @@ const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 					<RoomURL roomCode={room.roomCode} />
 				</div>
 				<FilePicker roomCode={room.roomCode.toString()} setFiles={setFiles} />
-				<div className="my-4 mx-8 flex justify-center items-center">
+				<div className="my-4 flex justify-center items-center">
 					<div className=" w-full max-w-[1260px]">
-						<h1 className="text-3xl font-bold">Uploaded Files</h1>
+						<h1 className="text-3xl font-black">Uploaded Files</h1>
 						<FileCards files={files} />
 					</div>
 				</div>

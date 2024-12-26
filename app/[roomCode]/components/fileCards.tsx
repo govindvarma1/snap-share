@@ -7,11 +7,7 @@ import JSZip from "jszip";
 import { formatBytes } from "@/app/utils/formatBytes";
 import { FileDetails } from "@/utils/types";
 
-export default function FileCards({
-	files,
-}: {
-	files: FileDetails[];
-}) {
+export default function FileCards({ files }: { files: FileDetails[] }) {
 	const [selectedFiles, setSelectedFiles] = React.useState<string[]>([]);
 	const allFilesSelected = selectedFiles.length === files.length;
 
@@ -78,12 +74,24 @@ export default function FileCards({
 	return (
 		<div>
 			<div className="actions flex items-center gap-4 my-2">
-				<button onClick={selectAllFiles} className="font-semibold">
-					Select All
-				</button>
-				<button onClick={deselectAllFiles} className="font-semibold">
-					Deselect All
-				</button>
+				{files.length > 0 ? (
+					<>
+						<button
+							onClick={selectAllFiles}
+							className="text-gray-600 font-semibold"
+						>
+							Select All
+						</button>
+						<button
+							onClick={deselectAllFiles}
+							className="text-gray-600 font-semibold"
+						>
+							Deselect All
+						</button>
+					</>
+				) : (
+					<p className="text-gray-600 font-semibold">No files uploaded yet</p>
+				)}
 				{/* <button
 					onClick={downloadSelectedFiles}
 					className="px-4 py-2 bg-green-500 text-white rounded"
@@ -103,7 +111,7 @@ export default function FileCards({
 				{files.map((file) => (
 					<div
 						key={file.mediaAccessLink}
-						className="file-card border border-gray-300 bg-white rounded p-4 flex items-center gap-4"
+						className="border-[2px] border-gray-300 bg-white rounded-lg p-4 flex items-center gap-4"
 					>
 						<input
 							type="checkbox"
@@ -114,11 +122,14 @@ export default function FileCards({
 						<div className="w-full">
 							<div className="flex justify-between w-full">
 								<p className="file-name font-semibold">
-									{file.name.slice(0, 15)}{file.name.length > 15 && "..."}
+									{file.name.slice(0, 15)}
+									{file.name.length > 15 && "..."}
 								</p>
 								<div className="flex gap-1">
 									<button
-										onClick={() => downloadFile(file.mediaAccessLink, file.name)}
+										onClick={() =>
+											downloadFile(file.mediaAccessLink, file.name)
+										}
 										className="text-lg"
 									>
 										<LuDownload />
