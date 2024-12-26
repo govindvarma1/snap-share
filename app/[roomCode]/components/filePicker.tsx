@@ -1,10 +1,17 @@
 "use client";
 
-import { UploadButton, UploadDropzone } from "@/utils/uploadthing";
+import { UploadDropzone } from "@/utils/uploadthing";
 import toast from "react-hot-toast";
 import { isRoomValid, saveFiles } from "../_actions/actions";
+import { Dispatch, SetStateAction } from "react";
 
-export default function FilePicker({ roomCode }: { roomCode: string }) {
+export default function FilePicker({
+	roomCode,
+	setFiles,
+}: {
+	roomCode: string;
+	setFiles: Dispatch<SetStateAction<{ name: string; url: string }[]>>;
+}) {
 	const verifyFileUpload = async (files: File[]) => {
 		try {
 			const roomValid = await isRoomValid(parseInt(roomCode));
@@ -31,9 +38,21 @@ export default function FilePicker({ roomCode }: { roomCode: string }) {
 				}}
 				onClientUploadComplete={async (res) => {
 					console.log("Files: ", res);
+					res.forEach((file) => {
+						setFiles((prevValue) => [
+							...prevValue,
+							{ name: file.name, url: file.url },
+						]);
+					});
 					await Promise.all(
 						res.map((file) => {
-							saveFiles(parseInt(roomCode), file.url, file.name, file.size, file.key);
+							saveFiles(
+								parseInt(roomCode),
+								file.url,
+								file.name,
+								file.size,
+								file.key
+							);
 						})
 					);
 					toast.dismiss();

@@ -1,6 +1,17 @@
 "use server";
 import { prisma } from "@/utils/prisma";
 
+export const getRoomDetails = async(roomCode: number) => {
+	try {
+		const room = await prisma.room.findUnique({
+			where: { roomCode: roomCode },
+		});
+		return room;
+	} catch (error) {
+		throw error
+	}
+}
+
 export const deleteRoom = async (roomCode: number) => {
 	try {
 		await prisma.room.delete({
@@ -58,3 +69,17 @@ export const saveFiles = async (
 		console.error("Error: ", error);
 	}
 };
+
+export const fetchFiles = async(roomCode: number) => {
+	try {
+		const files = await prisma.file.findMany({
+			where: {
+				roomCode
+			}
+		});
+		const modifiedFileDetails = files.map((file) => ({name: file.name, url: file.mediaAccessLink}));
+		return modifiedFileDetails;
+	} catch (error) {
+		throw error
+	}
+}

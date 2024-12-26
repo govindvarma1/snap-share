@@ -1,50 +1,78 @@
-import { prisma } from "@/utils/prisma";
+"use client"; // Make sure this component is client-side
+
+import React, { useState, useEffect } from "react";
 import RoomTimer from "./components/roomTimer";
 import RoomURL from "./components/roomURL";
 import FilePicker from "./components/filePicker";
+import { fetchFiles, getRoomDetails } from "./_actions/actions";
+import RoomPageSkeleton from "./loading";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import FileCards from "./components/fileCards";
 import "../globals.css";
 
-const RoomPage = async ({
-	params,
-}: {
-	params: Promise<{ roomCode: string }>;
-}) => {
-	const { roomCode } = await params;
-	let room = null;
+const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
+	const [room, setRoom] = useState<any>(null);
+	const [files, setFiles] = useState<{ name: string; url: string }[]>([]);
+	const router = useRouter();
 
-	const parsedRoomCode = parseInt(roomCode, 10);
+	useEffect(() => {
+		const fetchRoomDetails = async () => {
+			try {
+				const { roomCode } = await params;
+				const parsedRoomCode = parseInt(roomCode, 10);
 
-	if (isNaN(parsedRoomCode)) {
-		return <div className="p-6">Invalid Room Code</div>;
+				if (isNaN(parsedRoomCode)) {
+					toast.error("Room doesn't exist");
+					router.push("/");
+					return;
+				}
+
+				const [roomDetails, fetchedFiles] = await Promise.all([
+					getRoomDetails(parsedRoomCode),
+					fetchFiles(parsedRoomCode),
+				]);
+
+				if (!roomDetails) {
+					toast.error("Room doesn't exist");
+					router.push("/");
+					return;
+				}
+				setFiles(fetchedFiles);
+				setRoom(roomDetails);
+			} catch (error) {
+				toast.error("An error occurred while fetching room details.");
+				router.push("/");
+			}
+		};
+
+		fetchRoomDetails();
+	}, [params]);
+
+	if (!room) {
+		return <RoomPageSkeleton />;
 	}
 
-	try {
-		room = await prisma.room.findUnique({
-			where: { roomCode: parsedRoomCode },
-		});
-
-		if (!room) {
-			return <div className="p-6">Room not found</div>;
-		}
-
-		return (
-			<section className="app-bg min-h-screen">
-				<div className="px-4 py-4 sm:px-12">
-					<div className="flex flex-col w-full items-center my-4 gap-1">
-						<h1 className="text-4xl font-black">SnapShare</h1>
-						<RoomTimer createdAt={new Date(room.createdAt)} />
-					</div>
-					<div className="flex justify-center my-4">
-						<RoomURL roomCode={room.roomCode} />
-					</div>
-					<FilePicker roomCode={roomCode}/>
+	return (
+		<section className="app-bg min-h-screen">
+			<div className="px-4 py-4 sm:px-12">
+				<div className="flex flex-col w-full items-center my-4 gap-1">
+					<h1 className="text-4xl font-black">SnapShare</h1>
+					<RoomTimer createdAt={new Date(room.createdAt)} />
 				</div>
-			</section>
-		);
-	} catch (error) {
-		console.error("Error fetching room:", error);
-		return <div className="p-6">An error occurred. Please try again.</div>;
-	}
+				<div className="flex justify-center my-4">
+					<RoomURL roomCode={room.roomCode} />
+				</div>
+				<FilePicker roomCode={room.roomCode} setFiles={setFiles} />
+				<div className="my-4 mx-8 flex justify-center items-center">
+					<div className=" w-full max-w-[1260px]">
+						<h1 className="text-3xl font-bold">Uploaded Files</h1>
+						<FileCards files={files} />
+					</div>
+				</div>
+			</div>
+		</section>
+	);
 };
 
 export default RoomPage;
