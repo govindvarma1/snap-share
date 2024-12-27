@@ -30,14 +30,19 @@ export default function RoomURL({ roomCode }: { roomCode: number }) {
 		setIsButtonClicked(true);
 		toast.loading("Deleting the room");
 		try {
-			await deleteRoom(roomCode);
+			const isRoomDeleted = await deleteRoom(roomCode);
 			toast.dismiss();
-			toast.success("Room deleted successfully");
+			if(isRoomDeleted) {
+				toast.success("Room deleted successfully");
+			} else {
+				toast.error('Room has already been deleted');
+			}
 			await new Promise((resolve) => setInterval(resolve, 500));
 			router.push("/");
 		} catch (error) {
 			toast.dismiss();
 			toast.error(`Error: ${error}`);
+			router.push("/");
 		}
 	};
 

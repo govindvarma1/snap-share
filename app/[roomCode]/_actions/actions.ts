@@ -15,10 +15,18 @@ export const getRoomDetails = async (roomCode: number) => {
 
 export const deleteRoom = async (roomCode: number) => {
 	try {
+		const room = await prisma.room.findUnique({
+			where: {roomCode}
+		});
+
+		if(!room) {
+			return false;
+		}
+
 		await prisma.room.delete({
 			where: { roomCode },
 		});
-		return true;
+		return true
 	} catch (error) {
 		throw error;
 	}
