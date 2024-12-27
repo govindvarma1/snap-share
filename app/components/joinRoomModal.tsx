@@ -3,7 +3,7 @@ import "@/app/components/styles/animations.css";
 import React from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import Loader from "./Loader";
+import { LoaderCircle } from "lucide-react";
 
 export default function JoinRoomModal({
 	showJoinRoom,
@@ -109,7 +109,11 @@ export default function JoinRoomModal({
 						onClick={joinRoom}
 						disabled={isRoomJoining}
 					>
-						{isRoomJoining ? <Loader /> : <span>Join</span>}
+						{isRoomJoining ? (
+							<LoaderCircle className="animate-spin" />
+						) : (
+							<span>Join</span>
+						)}
 					</button>
 				</div>
 			</div>

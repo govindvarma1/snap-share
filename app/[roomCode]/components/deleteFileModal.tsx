@@ -1,12 +1,11 @@
-'use client'
+"use client";
 
 import "@/app/components/styles/animations.css";
 import { useRouter } from "next/navigation";
 import React from "react";
-import "../../components/styles/loader.css";
-import Loader from "../../components/Loader";
 import toast from "react-hot-toast";
 import { deleteFile } from "../_actions/actions";
+import { LoaderCircle } from "lucide-react";
 
 export default function DeleteFileModal({
 	fileToDeleteID,
@@ -23,7 +22,7 @@ export default function DeleteFileModal({
 		setFileToDeleteID(null);
 	};
 
-	const fileDelete = async() => {
+	const fileDelete = async () => {
 		setIsFileDeleting(true);
 		try {
 			await deleteFile(fileToDeleteID);
@@ -32,7 +31,7 @@ export default function DeleteFileModal({
 			toast.error(`${error}`);
 			setIsFileDeleting(false);
 		}
-	}
+	};
 
 	if (!fileToDeleteID) {
 		return null;
@@ -54,7 +53,8 @@ export default function DeleteFileModal({
 				</div>
 				<div>
 					<p className="text-gray-800 text-sm">
-						Are you sure you want to delete this file? This action cannot be undone.
+						Are you sure you want to delete this file? This action cannot be
+						undone.
 					</p>
 				</div>
 				<div className="flex justify-end gap-2">
@@ -69,7 +69,11 @@ export default function DeleteFileModal({
 						className={`bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded`}
 						disabled={isFileDeleting}
 					>
-						{isFileDeleting ? <Loader /> : "Delete"}
+						{isFileDeleting ? (
+							<LoaderCircle className="animate-spin" />
+						) : (
+							"Delete"
+						)}
 					</button>
 				</div>
 			</div>

@@ -8,6 +8,7 @@ import { formatBytes } from "@/app/utils/formatBytes";
 import { FileDetails } from "@/utils/types";
 import DeleteFileModal from "./deleteFileModal";
 import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
 
 export default function FileCards({
 	files,
@@ -20,6 +21,8 @@ export default function FileCards({
 	const [fileToDeleteID, setFileToDeleteID] = React.useState<string | null>(
 		null
 	);
+	const [isFileDownloading, setIsFileDownloading] =
+		React.useState<boolean>(false);
 
 	const toggleFileSelection = (fileUrl: string) => {
 		setSelectedFiles((prevSelected) =>
@@ -68,6 +71,7 @@ export default function FileCards({
 	};
 
 	const downloadSelectedFiles = async () => {
+		setIsFileDownloading(true);
 		try {
 			toast.loading("Preparing files for download...");
 			const zip = new JSZip();
@@ -108,6 +112,8 @@ export default function FileCards({
 			console.error("Error creating ZIP file:", error);
 			toast.dismiss();
 			toast.error("Failed to download ZIP file. Please try again.");
+		} finally {
+			setIsFileDownloading(false);
 		}
 	};
 
@@ -145,9 +151,13 @@ export default function FileCards({
 							<button
 								onClick={downloadSelectedFiles}
 								className="px-2 py-1 bg-blue-500 text-white rounded"
-								disabled={selectedFiles.length === 0}
+								disabled={isFileDownloading}
 							>
-								Download as ZIP
+								{isFileDownloading ? (
+									<LoaderCircle className="animate-spin" />
+								) : (
+									"Download as ZIP"
+								)}
 							</button>
 						</div>
 					)}

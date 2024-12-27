@@ -1,11 +1,10 @@
-'use client'
+"use client";
 
 import "@/app/components/styles/animations.css";
 import { useRouter } from "next/navigation";
 import React from "react";
-import "./styles/loader.css";
-import Loader from "./Loader";
 import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
 
 export default function CreateRoomModal({
 	showCreateRoom,
@@ -100,7 +99,11 @@ export default function CreateRoomModal({
 								className={`bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded`}
 								disabled={isRoomCreating}
 							>
-								{isRoomCreating ? <Loader /> : "Create"}
+								{isRoomCreating ? (
+									<LoaderCircle className="animate-spin" />
+								) : (
+									"Create"
+								)}
 							</button>
 						</div>
 					</>
