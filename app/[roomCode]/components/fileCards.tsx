@@ -6,10 +6,16 @@ import { MdOutlineDelete } from "react-icons/md";
 import JSZip from "jszip";
 import { formatBytes } from "@/app/utils/formatBytes";
 import { FileDetails } from "@/utils/types";
-import { deleteFile } from "../_actions/actions";
 import DeleteFileModal from "./deleteFileModal";
+import toast from "react-hot-toast";
 
-export default function FileCards({ files, setFiles }: { files: FileDetails[], setFiles: Dispatch<SetStateAction<FileDetails[]>> }) {
+export default function FileCards({
+	files,
+	setFiles,
+}: {
+	files: FileDetails[];
+	setFiles: Dispatch<SetStateAction<FileDetails[]>>;
+}) {
 	const [selectedFiles, setSelectedFiles] = React.useState<string[]>([]);
 	const [fileToDeleteID, setFileToDeleteID] = React.useState<string | null>(
 		null
@@ -34,46 +40,75 @@ export default function FileCards({ files, setFiles }: { files: FileDetails[], s
 		setFileToDeleteID(null);
 	};
 
-	const downloadFile = (fileUrl: string, fileName: string) => {
-		const anchor = document.createElement("a");
-		anchor.href = fileUrl;
-		anchor.download = fileName;
-		anchor.click();
+	const deleteSelectedFiles = async () => {
+		console.log("Delete selected");
 	};
 
-	const downloadSelectedFiles = () => {
-		if (selectedFiles.length === 0) {
-			alert("No files selected for download");
-			return;
+	const downloadSingleFile = async (fileUrl: string, fileName: string) => {
+		try {
+			toast.loading("File being downloaded...");
+			const response = await fetch(fileUrl);
+
+			const blob = await response.blob(); // Get file as a Blob
+			const url = window.URL.createObjectURL(blob); // Create a URL for the Blob
+
+			const anchor = document.createElement("a");
+			anchor.href = url;
+			anchor.setAttribute("download", fileName);
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+			toast.dismiss();
+			toast.success("file downloaded successfully");
+		} catch (error) {
+			toast.dismiss();
+			toast.error(`${error}`);
+			console.error("Error downloading file:", error);
 		}
-		selectedFiles.forEach((fileUrl) => {
-			const fileName = fileUrl.split("/").pop() || "file";
-			downloadFile(fileUrl, fileName);
-		});
 	};
 
-	const downloadAsZip = async () => {
-		if (selectedFiles.length === 0) {
-			alert("No files selected for download");
-			return;
+	const downloadSelectedFiles = async () => {
+		try {
+			toast.loading("Preparing files for download...");
+			const zip = new JSZip();
+			const folder = zip.folder("Downloaded_Files");
+
+			await Promise.all(
+				selectedFiles.map(async (url) => {
+					const fileDetail = files.find((file) => file.mediaAccessLink === url);
+					if (!fileDetail) {
+						throw new Error(`File name not found for URL: ${url}`);
+					}
+
+					const response = await fetch(url);
+					if (!response.ok) {
+						throw new Error(
+							`Failed to fetch file: ${fileDetail.mediaAccessLink}`
+						);
+					}
+					const blob = await response.blob();
+					folder?.file(fileDetail.name, blob);
+				})
+			);
+
+			const zipBlob = await zip.generateAsync({ type: "blob" });
+			const zipUrl = window.URL.createObjectURL(zipBlob);
+
+			const anchor = document.createElement("a");
+			anchor.href = zipUrl;
+			anchor.setAttribute("download", "SnapShare-app-files.zip");
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+
+			window.URL.revokeObjectURL(zipUrl);
+			toast.dismiss();
+			toast.success("ZIP file downloaded successfully!");
+		} catch (error) {
+			console.error("Error creating ZIP file:", error);
+			toast.dismiss();
+			toast.error("Failed to download ZIP file. Please try again.");
 		}
-		const zip = new JSZip();
-		const folder = zip.folder("Selected Files");
-
-		await Promise.all(
-			selectedFiles.map(async (fileUrl) => {
-				const response = await fetch(fileUrl);
-				const blob = await response.blob();
-				const fileName = fileUrl.split("/").pop() || "file";
-				folder?.file(fileName, blob);
-			})
-		);
-
-		const zipBlob = await zip.generateAsync({ type: "blob" });
-		const anchor = document.createElement("a");
-		anchor.href = URL.createObjectURL(zipBlob);
-		anchor.download = "selected-files.zip";
-		anchor.click();
 	};
 
 	return (
@@ -100,16 +135,16 @@ export default function FileCards({ files, setFiles }: { files: FileDetails[], s
 					)}
 					{selectedFiles.length > 0 && (
 						<div className="flex gap-2">
+							{/* <button
+								onClick={deleteSelectedFiles}
+								className="px-2 py-1 bg-red-500 text-white rounded"
+								disabled={selectedFiles.length === 0}
+							>
+								Delete Selected
+							</button> */}
 							<button
 								onClick={downloadSelectedFiles}
 								className="px-2 py-1 bg-blue-500 text-white rounded"
-								disabled={selectedFiles.length === 0}
-							>
-								Download Selected
-							</button>
-							<button
-								onClick={downloadAsZip}
-								className="px-2 py-1 bg-purple-500 text-white rounded"
 								disabled={selectedFiles.length === 0}
 							>
 								Download as ZIP
@@ -139,7 +174,7 @@ export default function FileCards({ files, setFiles }: { files: FileDetails[], s
 									<div className="flex gap-1">
 										<button
 											onClick={() =>
-												downloadFile(file.mediaAccessLink, file.name)
+												downloadSingleFile(file.mediaAccessLink, file.name)
 											}
 											className="text-lg"
 										>
