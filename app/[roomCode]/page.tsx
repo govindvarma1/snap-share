@@ -68,7 +68,7 @@ const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 				<div className="my-4 flex justify-center items-center">
 					<div className=" w-full max-w-[1260px]">
 						<h1 className="text-3xl font-black">Uploaded Files</h1>
-						<FileCards files={files} />
+						<FileCards files={files} setFiles = {setFiles}/>
 					</div>
 				</div>
 			</div>
