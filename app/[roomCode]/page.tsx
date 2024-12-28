@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import FileCards from "./components/fileCards";
 import { FileDetails, RoomDetails } from "@/utils/types";
 import "../globals.css";
+import { resolve } from "path";
 
 const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 	const [room, setRoom] = useState<RoomDetails | null>(null);
@@ -36,6 +37,17 @@ const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 
 				if (!roomDetails) {
 					toast.error("Room doesn't exist");
+					router.push("/");
+					return;
+				}
+
+				const expiryTime = roomDetails.createdAt.getTime() + 15 * 60 * 1000;
+				const currentTime = new Date().getTime();
+				if (currentTime >= expiryTime) {
+					toast.error("Room has expired");
+					await new Promise((resolve) => {
+						setTimeout(resolve, 500);
+					});
 					router.push("/");
 					return;
 				}
@@ -68,7 +80,7 @@ const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 				<div className="my-4 flex justify-center items-center">
 					<div className=" w-full max-w-[1260px]">
 						<h1 className="text-3xl font-black">Uploaded Files</h1>
-						<FileCards files={files} setFiles = {setFiles}/>
+						<FileCards files={files} setFiles={setFiles} />
 					</div>
 				</div>
 			</div>

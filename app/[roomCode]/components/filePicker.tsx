@@ -3,8 +3,9 @@
 import { UploadDropzone } from "@/utils/uploadthing";
 import toast from "react-hot-toast";
 import { isRoomValid, saveFiles } from "../_actions/actions";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { FileDetails } from "@/utils/types";
+import { useRouter } from "next/navigation";
 
 export default function FilePicker({
 	roomCode,
@@ -13,17 +14,27 @@ export default function FilePicker({
 	roomCode: string;
 	setFiles: Dispatch<SetStateAction<FileDetails[]>>;
 }) {
+	const router = useRouter();
+	const [isUploading, setIsUploading] = React.useState(false);
+
+	const parsedRoomCode = parseInt(roomCode);
+
 	const verifyFileUpload = async (files: File[]) => {
 		try {
-			const roomValid = await isRoomValid(parseInt(roomCode));
+			toast.loading("Checking room validity", { id: "room-validity" });
+			const roomValid = await isRoomValid(parsedRoomCode);
+			toast.dismiss("room-validity");
+
 			if (roomValid) {
 				return files;
 			} else {
 				toast.error("Room has expired");
+				router.push("/");
 				return [];
 			}
 		} catch (error) {
-			toast.error(`Error: ${error}`);
+			toast.dismiss("room-validity");
+			toast.error(`Error verifying room: ${error}`);
 			return [];
 		}
 	};
@@ -32,42 +43,57 @@ export default function FilePicker({
 		<main className="flex flex-col items-center justify-between my-8">
 			<UploadDropzone
 				endpoint="allFilesUploader"
-				input={{ roomCode: parseInt(roomCode) }}
-				onBeforeUploadBegin={(files) => verifyFileUpload(files)}
+				input={{ roomCode: parsedRoomCode }}
+				onBeforeUploadBegin={verifyFileUpload}
 				onUploadBegin={() => {
-					toast.loading("uploading files...", { id: "upload-files" });
+					setIsUploading(true);
+					toast.loading("Uploading files...", { id: "upload-files" });
 				}}
 				onClientUploadComplete={async (res) => {
-					console.log("Files: ", res);
-					res.forEach((file) => {
-						setFiles((prevValue) => [
-							...prevValue,
-							{
-								roomCode: parseInt(roomCode),
-								name: file.name,
-								mediaAccessLink: file.url,
-								size: file.size,
-								mediaId: file.key,
-							},
-						]);
-					});
-					await Promise.all(
-						res.map((file) => {
-							saveFiles(
-								parseInt(roomCode),
-								file.url,
-								file.name,
-								file.size,
-								file.key
+					try {
+						if (res && res.length > 0) {
+							console.log("Files: ", res);
+
+							res.forEach((file) => {
+								setFiles((prevValue) => [
+									...prevValue,
+									{
+										roomCode: parsedRoomCode,
+										name: file.name,
+										mediaAccessLink: file.url,
+										size: file.size,
+										mediaId: file.key,
+									},
+								]);
+							});
+
+							await Promise.all(
+								res.map((file) =>
+									saveFiles(
+										parsedRoomCode,
+										file.url,
+										file.name,
+										file.size,
+										file.key
+									)
+								)
 							);
-						})
-					);
-					toast.dismiss();
-					toast.success("Files uploaded successfully");
+
+							toast.success("Files uploaded successfully");
+						} else {
+							toast.error("No files were uploaded.");
+						}
+					} catch (error) {
+						toast.error(`Error processing files: ${error}`);
+					} finally {
+						toast.dismiss("upload-files");
+						setIsUploading(false);
+					}
 				}}
 				onUploadError={(error: Error) => {
-					toast.dismiss();
-					toast.error(`ERROR! ${error.message}`);
+					toast.dismiss("upload-files");
+					toast.error(`Upload failed: ${error.message}`);
+					setIsUploading(false);
 				}}
 				appearance={{
 					label: {
@@ -84,7 +110,8 @@ export default function FilePicker({
 					},
 					button: {
 						fontWeight: "500",
-						backgroundColor: "#3b82f6",
+						backgroundColor: isUploading ? "#cbd5e1" : "#3b82f6", // Change button color when disabled
+						cursor: isUploading ? "not-allowed" : "pointer", // Change cursor style
 					},
 				}}
 			/>
