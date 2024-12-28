@@ -122,7 +122,7 @@ export default function FileCards({
 			<div>
 				<div className="flex w-full justify-between gap-4 my-2">
 					{files.length > 0 ? (
-						<div className="flex gap-2">
+						<div className="flex gap-2 py-1">
 							<button
 								onClick={selectAllFiles}
 								className="text-gray-600 font-semibold"
@@ -163,7 +163,7 @@ export default function FileCards({
 					)}
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					{files.map((file) => (
 						<div
 							key={file.mediaAccessLink}
@@ -186,12 +186,12 @@ export default function FileCards({
 											onClick={() =>
 												downloadSingleFile(file.mediaAccessLink, file.name)
 											}
-											className="text-lg"
+											className="text-lg p-2"
 										>
 											<LuDownload />
 										</button>
 										<button
-											className="text-lg"
+											className="text-lg p-2"
 											onClick={() => setFileToDeleteID(file.mediaId)}
 										>
 											<MdOutlineDelete />
