@@ -3,7 +3,7 @@
 import "@/app/components/styles/animations.css";
 import React from "react";
 import toast from "react-hot-toast";
-import { deleteFile } from "../_actions/actions";
+import { deleteFile } from "../actions/actions";
 import { LoaderCircle } from "lucide-react";
 
 export default function DeleteFileModal({

@@ -2,7 +2,7 @@
 
 import { UploadDropzone } from "@/utils/uploadthing";
 import toast from "react-hot-toast";
-import { isRoomValid, saveFiles } from "../_actions/actions";
+import { isRoomValid, saveFiles } from "../actions/actions";
 import React, { Dispatch, SetStateAction } from "react";
 import { FileDetails } from "@/utils/types";
 import { useRouter } from "next/navigation";

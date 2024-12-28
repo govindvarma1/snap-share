@@ -29,7 +29,10 @@ const LoadingSkeleton: React.FC = () => {
 			<div className="w-5/6 max-w-[1260px] mt-8 space-y-4">
 				{/* File Options */}
 				<div className="flex flex-col gap-4">
-					<div className="w-56 h-8 bg-gray-300 rounded animate-pulse"></div>
+					<div className="flex w-full justify-between">
+						<div className="w-56 h-8 bg-gray-300 rounded animate-pulse"></div>
+						<div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
+					</div>
 					<div className="flex gap-2">
 						<div className="w-24 h-4 bg-gray-300 rounded animate-pulse"></div>
 						<div className="w-24 h-4 bg-gray-300 rounded animate-pulse"></div>

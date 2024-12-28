@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import RoomTimer from "./components/roomTimer";
 import RoomURL from "./components/roomURL";
 import FilePicker from "./components/filePicker";
-import { fetchFiles, getRoomDetails } from "./_actions/actions";
+import { fetchFiles, getRoomDetails } from "./actions/actions";
 import RoomPageSkeleton from "./loading";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -12,10 +12,12 @@ import FileCards from "./components/fileCards";
 import { FileDetails, RoomDetails } from "@/utils/types";
 import "../globals.css";
 import { resolve } from "path";
+import { RefreshCcw } from "lucide-react";
 
 const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 	const [room, setRoom] = useState<RoomDetails | null>(null);
 	const [files, setFiles] = useState<FileDetails[]>([]);
+	const [areFilesRefreshing, setAreFilesRefreshing] = useState(false);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -61,6 +63,25 @@ const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 
 		fetchRoomDetails();
 	}, [params]);
+	const refreshFiles = async () => {
+		try {
+			setAreFilesRefreshing(true);
+			toast.loading("Refreshing files...");
+
+			const { roomCode } = await params;
+			const parsedRoomCode = parseInt(roomCode, 10);
+			const fetchedFiles = await fetchFiles(parsedRoomCode);
+
+			setFiles(fetchedFiles);
+			setAreFilesRefreshing(false);
+			toast.dismiss();
+			toast.success("Files refreshed successfully.");
+		} catch (error) {
+			toast.dismiss();
+			toast.error("Failed to refresh files. Please try again.");
+			setAreFilesRefreshing(false);
+		}
+	};
 
 	if (!room) {
 		return <RoomPageSkeleton />;
@@ -79,7 +100,16 @@ const RoomPage = ({ params }: { params: Promise<{ roomCode: string }> }) => {
 				<FilePicker roomCode={room.roomCode.toString()} setFiles={setFiles} />
 				<div className="my-4 flex justify-center items-center">
 					<div className=" w-full max-w-[1260px]">
-						<h1 className="text-3xl font-black">Uploaded Files</h1>
+						<div className="flex w-full justify-between">
+							<h1 className="text-3xl font-black">Uploaded Files</h1>
+							<button disabled={areFilesRefreshing} onClick={refreshFiles}>
+								<RefreshCcw
+									className={`${
+										areFilesRefreshing ? "animate-spin text-gray-600" : "text-gray-800"
+									}`}
+								/>
+							</button>
+						</div>
 						<FileCards files={files} setFiles={setFiles} />
 					</div>
 				</div>
