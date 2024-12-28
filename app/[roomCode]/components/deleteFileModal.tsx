@@ -1,7 +1,6 @@
 "use client";
 
 import "@/app/components/styles/animations.css";
-import { useRouter } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
 import { deleteFile } from "../_actions/actions";

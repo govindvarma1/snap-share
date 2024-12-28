@@ -16,17 +16,28 @@ export const getRoomDetails = async (roomCode: number) => {
 export const deleteRoom = async (roomCode: number) => {
 	try {
 		const room = await prisma.room.findUnique({
-			where: {roomCode}
+			where: { roomCode },
+			select: {
+				id: true,
+				files: true,
+			},
 		});
 
-		if(!room) {
+		if (!room) {
 			return false;
+		}
+
+		const fileIds = room.files.map((file: { mediaId: string }) => file.mediaId);
+
+		if (fileIds.length > 0) {
+			await utapi.deleteFiles(fileIds);
+			console.log(`Deleted ${fileIds.length} from UploadThing`);
 		}
 
 		await prisma.room.delete({
 			where: { roomCode },
 		});
-		return true
+		return true;
 	} catch (error) {
 		throw error;
 	}
@@ -102,8 +113,8 @@ export const fetchFiles = async (roomCode: number) => {
 export const deleteFile = async (mediaId: string) => {
 	try {
 		await prisma.file.deleteMany({
-			where: {mediaId: mediaId},
-		})
+			where: { mediaId: mediaId },
+		});
 		await utapi.deleteFiles(mediaId);
 		console.log("Deleted File", mediaId);
 		return true;
